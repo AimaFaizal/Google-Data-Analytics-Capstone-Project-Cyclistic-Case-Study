@@ -58,3 +58,41 @@ FROM (
   FROM 2024_divvy_trip_data.cyclistic_data
 ) sub
 WHERE row_num > 1;
+
+
+
+#Remove rows with NULL values in any of the important columns from the Cyclistic dataset: 2024_divvy_trip_data.cyclistic_data
+
+DELETE FROM 2024_divvy_trip_data.cyclistic_data
+WHERE 
+  ride_id IS NULL OR
+  rideable_type IS NULL OR
+  started_at IS NULL OR
+  ended_at IS NULL OR
+  start_station_name IS NULL OR
+  start_station_id IS NULL OR
+  end_station_name IS NULL OR
+  end_station_id IS NULL OR
+  start_lat IS NULL OR
+  start_lng IS NULL OR
+  end_lat IS NULL OR
+  end_lng IS NULL OR
+  member_casual IS NULL;
+
+#Preview rows with NULL values before deletion for due diligence
+SELECT *
+FROM 2024_divvy_trip_data.cyclistic_data
+WHERE 
+  ride_id IS NULL OR
+  rideable_type IS NULL OR
+  started_at IS NULL OR
+  ended_at IS NULL OR
+  start_station_name IS NULL OR
+  start_station_id IS NULL OR
+  end_station_name IS NULL OR
+  end_station_id IS NULL OR
+  start_lat IS NULL OR
+  start_lng IS NULL OR
+  end_lat IS NULL OR
+  end_lng IS NULL OR
+  member_casual IS NULL;
