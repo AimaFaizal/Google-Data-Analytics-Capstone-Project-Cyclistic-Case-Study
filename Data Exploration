@@ -1,0 +1,88 @@
+# Identifying the number of null values in each column
+SELECT COUNT(*) - COUNT(ride_id) ride_id,
+ COUNT(*) - COUNT(rideable_type) rideable_type,
+ COUNT(*) - COUNT(started_at) started_at,
+ COUNT(*) - COUNT(ended_at) ended_at,
+ COUNT(*) - COUNT(start_station_name) start_station_name,
+ COUNT(*) - COUNT(start_station_id) start_station_id,
+ COUNT(*) - COUNT(end_station_name) end_station_name,
+ COUNT(*) - COUNT(end_station_id) end_station_id,
+ COUNT(*) - COUNT(start_lat) start_lat,
+ COUNT(*) - COUNT(start_lng) start_lng,
+ COUNT(*) - COUNT(end_lat) end_lat,
+ COUNT(*) - COUNT(end_lng) end_lng,
+ COUNT(*) - COUNT(member_casual) member_casual
+FROM `2022_divvy_trip_data.cyclistic_data`;
+
+# Count total number of unique ride IDs
+SELECT COUNT(DISTINCT ride_id) AS unique_rides
+FROM 2022_divvy_trip_data.cyclistic_data;
+
+# Count of each rideable_type (e.g., classic_bike, electric_bike, docked_bike)
+SELECT rideable_type, COUNT(*) AS total_rides
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY rideable_type
+ORDER BY total_rides DESC;
+
+# Extract and group by month
+SELECT 
+  EXTRACT(MONTH FROM started_at) AS ride_month,
+  COUNT(*) AS total_rides
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY ride_month
+ORDER BY ride_month;
+
+# Calculate ride duration in minutes
+SELECT 
+  AVG(TIMESTAMPDIFF(MINUTE, started_at, ended_at)) AS avg_duration_min
+FROM 2022_divvy_trip_data.cyclistic_data;
+
+# Most frequently used start stations
+SELECT start_station_name, COUNT(*) AS ride_count
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY start_station_name
+ORDER BY ride_count DESC
+LIMIT 10;
+
+# Most popular destination stations
+SELECT end_station_name, COUNT(*) AS ride_count
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY end_station_name
+ORDER BY ride_count DESC
+LIMIT 10;
+
+# Min and max of start location coordinates
+SELECT 
+  MIN(start_lat) AS min_start_lat,
+  MAX(start_lat) AS max_start_lat,
+  MIN(start_lng) AS min_start_lng,
+  MAX(start_lng) AS max_start_lng
+FROM 2022_divvy_trip_data.cyclistic_data;
+
+
+# Min and max of end location coordinates
+SELECT 
+  MIN(end_lat) AS min_end_lat,
+  MAX(end_lat) AS max_end_lat,
+  MIN(end_lng) AS min_end_lng,
+  MAX(end_lng) AS max_end_lng
+FROM 2022_divvy_trip_data.cyclistic_data;
+
+
+# How many rides by member vs casual users
+SELECT member_casual, COUNT(*) AS total_rides
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY member_casual;
+
+
+# See which user type prefers which rideable type
+SELECT member_casual, rideable_type, COUNT(*) AS total_rides
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY member_casual, rideable_type
+ORDER BY total_rides DESC;
+
+
+
+
+
+
