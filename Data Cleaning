@@ -1,0 +1,60 @@
+*Remove duplicate records from the merged Cyclistic dataset
+*Dataset name: 2024_divvy_trip_data.cyclistic_data
+#Assumption: Duplicates are defined as rows that are identical in all columns except for ride_id (i.e., the ride_id is different, but the ride details are the same).
+#Goal: Keep only the first occurrence of each duplicate based on the earliest started_at timestamp.
+
+#Step 1: Use a CTE to assign row numbers to potential duplicates
+WITH ranked_rides AS (
+  SELECT *,
+         ROW_NUMBER() OVER (
+           PARTITION BY 
+             rideable_type,
+             started_at,
+             ended_at,
+             start_station_name,
+             start_station_id,
+             end_station_name,
+             end_station_id,
+             start_lat,
+             start_lng,
+             end_lat,
+             end_lng,
+             member_casual
+           ORDER BY started_at ASC  -- Keep the earliest duplicate ride
+         ) AS row_num
+  FROM 2024_divvy_trip_data.cyclistic_data
+)
+
+#Step 2: Delete all rows where the row number is greater than 1
+-- (i.e., the duplicate entries, keeping only the first)
+DELETE FROM 2024_divvy_trip_data.cyclistic_data
+WHERE ride_id IN (
+  SELECT ride_id
+  FROM ranked_rides
+  WHERE row_num > 1
+);
+
+
+#Previewing potential duplicate rows that would be deleted for due diligence
+SELECT *
+FROM (
+  SELECT *,
+         ROW_NUMBER() OVER (
+           PARTITION BY 
+             rideable_type,
+             started_at,
+             ended_at,
+             start_station_name,
+             start_station_id,
+             end_station_name,
+             end_station_id,
+             start_lat,
+             start_lng,
+             end_lat,
+             end_lng,
+             member_casual
+           ORDER BY started_at ASC
+         ) AS row_num
+  FROM 2024_divvy_trip_data.cyclistic_data
+) sub
+WHERE row_num > 1;
