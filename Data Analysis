@@ -1,0 +1,80 @@
+-- Cyclistic 2024 Ride Data Analysis
+-- Objective: Explore user behavior and trends to support branding strategy for a digital marketing campaign.
+
+-- -----------------------------------
+# 1. User Segmentation: Members vs Casual Riders
+SELECT member_casual, COUNT(*) AS total_rides
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY member_casual;
+
+# 2. Ride Frequency by Day of Week
+SELECT 
+  DAYNAME(started_at) AS day_of_week,
+  COUNT(*) AS total_rides
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY day_of_week
+ORDER BY total_rides DESC;
+
+# 3. Ride Frequency by Hour of Day
+SELECT 
+  HOUR(started_at) AS ride_hour,
+  COUNT(*) AS total_rides
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY ride_hour
+ORDER BY ride_hour;
+
+# 4. Top 10 Start Stations
+SELECT start_station_name, COUNT(*) AS start_count
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY start_station_name
+ORDER BY start_count DESC
+LIMIT 10;
+
+# 5. Top 10 End Stations
+SELECT end_station_name, COUNT(*) AS end_count
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY end_station_name
+ORDER BY end_count DESC
+LIMIT 10;
+
+# 6. Bike Type Preferences by User Type
+SELECT member_casual, rideable_type, COUNT(*) AS ride_count
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY member_casual, rideable_type
+ORDER BY ride_count DESC;
+
+# 7. Monthly Ride Trends
+SELECT 
+  EXTRACT(MONTH FROM started_at) AS ride_month,
+  COUNT(*) AS total_rides
+FROM 2024_divvy_trip_data.cyclistic_data
+GROUP BY ride_month
+ORDER BY ride_month;
+
+# 8. Bike type preference by daily (day)
+SELECT 
+  DAYNAME(started_at) AS day_of_week,
+  rideable_type,
+  COUNT(*) AS total_rides
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY day_of_week, rideable_type
+ORDER BY day_of_week, total_rides DESC;
+
+# 9. Ride count by hour of day and user type
+SELECT 
+  HOUR(started_at) AS ride_hour,
+  member_casual,
+  COUNT(*) AS ride_count
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY ride_hour, member_casual
+ORDER BY ride_hour, member_casual;
+
+# 10. -- Calculate average ride duration (in minutes) by user type
+SELECT 
+  member_casual,
+  AVG(TIMESTAMPDIFF(MINUTE, started_at, ended_at)) AS avg_ride_duration_min
+FROM 2022_divvy_trip_data.cyclistic_data
+GROUP BY member_casual;
+
+-- -----------------------------------
+
